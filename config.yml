@@ -1,0 +1,11 @@
+# dspnote configuration file #
+
+urlPrefix: /notes/
+
+### LOCAL PATHS ###
+# can be absolute or relative to this yml
+
+templateDir: templates
+contentDir: content
+staticDir: ../dspnote/example/static
+outDir: ../../web/osar/notes
