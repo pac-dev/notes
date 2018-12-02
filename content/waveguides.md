@@ -10,10 +10,11 @@ Created: November 4, 2018
 
 ## A Delay Line with Feedback
 
-We begin with a minimal, special case of a waveguide. Take a source signal (the *excitation*), and delay it by a short duration (the *delay length*). Then take the delayed signal, attenuate it by a certain amount (*feedback*), and feed it back into the delay along with the source signal. As the delay receives its own output in a loop, some frequencies will begin to emerge, creating a perceivable pitch, which is in simple cases the inverse of the delay length. This is also known as a feedback comb filter. If you play with the model below, you'll notice the delay length seems to double when feedback is negative. This naturally arises from the fact that a number is repeated after its sign is inverted twice. Negative feedback also changes the timbre, because all even harmonics cancel themselves out. This is useful in wind instrument waveguides, where the feedback sign depends on the type of bore: open-ended flute bores yield models with positive feedback; and closed bores (as in pan flutes) yield negative feedback.
+We begin with a minimal, special case of a waveguide. Take a source signal (the *excitation*), and delay it by a short duration (the *delay length*). Then take the delayed signal, attenuate it by a certain amount (*feedback*), and feed it back into the delay along with the source signal. As the delay receives its own output in a loop, some frequencies will begin to emerge, creating a perceivable pitch, which is in simple cases the inverse of the delay length. If you play with the model below, you'll notice the delay length seems to double when feedback is negative. This naturally arises from the fact that a number is repeated after its sign is inverted twice. Negative feedback also changes the timbre, because all even harmonics cancel themselves out. This is useful in wind instrument waveguides, where the feedback sign depends on the type of bore: open-ended flute bores yield models with positive feedback; and closed bores (as in pan flutes) yield negative feedback.
 
 figure: sporthDiagram
 diagram: feedbackWaveguide-1.2.svg
+caption: A delay line with feedback. This is also known as a feedback comb filter.
 code:
 ```
 	_exciter_type 9 palias # 0 - 1
@@ -54,6 +55,7 @@ Note how the previous model has very sustained high frequencies, giving it an un
 
 figure: sporthDiagram
 diagram: filterWaveguide-1.2.svg
+caption: A basic waveguide model with two filters.
 code:
 ```
 	_exciter_type 9 palias # 0 - 1
@@ -91,6 +93,7 @@ Note how the previous model, when filtered, produces only short notes, even with
 
 figure: sporthDiagram
 diagram: NLWaveguide-1.2.svg
+caption: A waveguide model with filters and a nonlinearity.
 code:
 ```
 	_exciter_type 9 palias # 0 - 1
@@ -123,7 +126,7 @@ code:
 
 ## Controlling the Pitch
 
-The first model's pitch was simply determined by the delay length. You may have noticed that's not the case anymore: change the inner filter's frequency, and the pitch also changes. Why? Simply because digital filters are based on delay, so by introducing a filter, we're changing the total length of the cumulative delay line. Because of this, in order to make the model produce the desired pitch, we need to establish the relationship between delay length, filter frequency, and pitch. Should be easy to produce an exact solution, right? Not really. Depending on the filter, the final pitch might have register changes and inharmonicity yielding a pitch that's more of a psycho-acoustic impression than a mathematically precise value. This means an exact solution would require some real effort, but thankfully we don't actually need to use our brains: we can use regression instead! Just measure how the filter affects the pitch and fit an equation onto it. For simple lowpass filters, we obtain something in the form:
+The first model's pitch was simply determined by the delay length. You may have noticed that's not the case anymore: change the inner filter's frequency, and the pitch also changes. Why? Simply because digital filters are based on delay, so by introducing a filter, we're changing the total length of the cumulative delay line. In order to make the model produce the desired pitch, we need to establish the relationship between delay length, filter frequency, and pitch. Should be easy to produce an exact solution, right? Not really. Depending on the filter, the final pitch might have register changes and inharmonicity yielding a pitch that's more of a psycho-acoustic impression than a mathematically precise value. This means an exact solution would require some real effort, but thankfully we don't actually need to use our brains: we can use regression instead! Just measure how the filter affects the pitch and fit an equation onto it. For simple lowpass filters, we obtain something in the form:
 
 
 $$
@@ -139,6 +142,7 @@ $$
 
 figure: sporthDiagram
 diagram: NLWaveguide-1.2.svg
+caption: A waveguide model playing a melody. For the simple 1-pole filter used here, we obtain the constants $c_1 \approx 0.1786$ and $c_2 \approx 1.011$
 code:
 ```
 	_feedback 11 palias # -2 - 2, -1.1
@@ -180,8 +184,6 @@ code:
 	dup dup 0.5 3 1200 zrev + 0.75 * + 0 0.01 -15 peaklim
 ```
 
-With $c_1=0.15$? It is often desirable to apply pitch tracking on the inner filter's cutoff.
-
 
 
 ## Flute Note Transitions
@@ -190,6 +192,7 @@ Notice that the model above has staccato notes. Why? Because I was too lazy to i
 
 figure: sporthDiagram
 diagram: transWaveguide-1.2.svg
+caption: A waveguide model playing controllable legato notes. Move the "note" slider to control the notes.
 code:
 ```
 	_note 10 palias # 0 - 3.9
@@ -232,15 +235,56 @@ code:
 
 
 
+## Abstract organic sounds
+
+Placing a bandpass filter inside the delay loop leads to some interesting sounds.
+
+figure: sporthDiagram
+diagram: feedbackWaveguide-1.2.svg
+caption: Abstract organic sounds.
+code:
+```
+	_exciter_type 9 palias # 0 - 1
+	_delay_length 10 palias # 1 - 10, 5 (ms)
+	_feedback 11 palias # -1 - 1, 0.7
+	_tik var tick _tik set
+	
+	# feedback scale: (tanh(x*2)*5+x)*0.171818
+	_fb var _feedback get dup 2 * tanh 5 * + 0.1718 * _fb set
+	
+	# exciter
+	0.3 noise 1000 butlp
+	dup 2 metro 0 0.001 0.01 tenv * _exciter_type get cf
+	
+	# delay and feedback
+	(_fb get) (_delay_length get 0.001 * _tik get 0.03 tport) 0.1 vdelay
+```
+
+
+
 ## Implementation Details
 
-### Original Form and Simplified Form
+### Original, Simplified and Related Forms
 
-Anyone researching waveguides will often come across form A below:
+figure: image
+image: formsWaveguides-1.2.svg
+caption: Commonly used waveguide forms.
 
-[form A] [form B]
+Form A above is commonly found in educational material, because it's the one that directly matches the ideal physical model. However, it should generally not be used in practice. Instead, we've been using the simplified form B, which is obtained by changing the point at which the delay loop is sampled, then combining delays inside the loop. More generally, the input and output points as well as the order of elements inside the delay loop can often be modified with no audible difference, even if the model is not exactly equivalent. Form C is particularly useful when low latency is required.
 
-This first form is obtained through physical modeling of bidirectional waves in a one-dimensional acoustic system. However, it should generally not be used in practice. Instead, we've been using the simplified similar form B, which is obtained by changing the point at which the delay loop is sampled, then commuting and combining delays and gains inside the loop. J. O. Smith provides many resources to understand how the original form is obtained.
+### Delay Line Sampling and Interpolation
+
+Digital delay lines are made of discrete samples, but we need to read them at arbitrary time points between samples. There are a few possible solutions to this:
+
+- Rounding the time to the nearest exact sample. This will cause the model to be detuned, especially at common sampling rates and higher pitches, where a difference of half a sample is easily perceptible.
+
+- Linear interpolation. This will cause undesirably different timbres depending on which note is being played. Pitches that cause even interpolation between two samples will have audible filtering and shorter decay.
+
+- Polynomial interpolation. This is the simplest solution to give an acceptable result, and is used in all the examples above. Interpolating over four samples tends to be sufficient for musical purposes.
+
+- Resampling the delay loop. A more unusual solution, where we use a fixed or rounded delay length for the delay loop, but we process the entire loop at a different sample rate than the final output. This way, interpolation artifacts are not amplified by the delay loop. Depending on the inner filters being used, it's sometimes also useful to oversample the delay loop for quality.
+
+
 
 
 
