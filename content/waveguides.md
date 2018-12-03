@@ -13,7 +13,7 @@ Created: November 4, 2018
 We begin with a minimal, special case of a waveguide. Take a source signal (the *excitation*), and delay it by a short duration (the *delay length*). Then take the delayed signal, attenuate it by a certain amount (*feedback*), and feed it back into the delay along with the source signal. As the delay receives its own output in a loop, some frequencies will begin to emerge, creating a perceivable pitch, which is in simple cases the inverse of the delay length. If you play with the model below, you'll notice the delay length seems to double when feedback is negative. This naturally arises from the fact that a number is repeated after its sign is inverted twice. Negative feedback also changes the timbre, because all even harmonics cancel themselves out. This is useful in wind instrument waveguides, where the feedback sign depends on the type of bore: open-ended flute bores yield models with positive feedback; and closed bores (as in pan flutes) yield negative feedback.
 
 figure: sporthDiagram
-diagram: feedbackWaveguide-1.2.svg
+diagram: WG_Feedback.svg
 caption: A delay line with feedback. This is also known as a feedback comb filter.
 code:
 ```
@@ -54,7 +54,7 @@ $$
 Note how the previous model has very sustained high frequencies, giving it an unrealistic timbre. In reality, a physical medium will absorb higher frequencies more heavily than lower frequencies. This can be roughly modeled with a filter inside the loop. It's also important to feel the difference between filtering inside the loop vs. filtering only the excitation. The following model has butterworth lowpass filters in both positions:
 
 figure: sporthDiagram
-diagram: filterWaveguide-1.2.svg
+diagram: WG_Filters.svg
 caption: A basic waveguide model with two filters.
 code:
 ```
@@ -92,7 +92,7 @@ code:
 Note how the previous model, when filtered, produces only short notes, even with maximum feedback. Can this be remedied? Raising the feedback above 1 would cause the amplitude to keep increasing theoretically forever (this would be instability). We've been simply multiplying the signal $x$ by the feedback value $a$, in other words, applying a linear transfer function $\mathrm{L}(x) = ax$. In real acoustic systems, louder sounds are more heavily absorbed by the medium, and the simplest way of modeling this is to use a non-linear transfer function such as $\mathrm{NL}(x) = \tanh(ax)$ that gives us lower feedback for high values. This will also allow sustained notes without instability.
 
 figure: sporthDiagram
-diagram: NLWaveguide-1.2.svg
+diagram: WG_Nonlinearities.svg
 caption: A waveguide model with filters and a nonlinearity.
 code:
 ```
@@ -141,7 +141,7 @@ $$
 - $c_1$ and $c_2$ are constants tied to the inner filter algorithm being used
 
 figure: sporthDiagram
-diagram: NLWaveguide-1.2.svg
+diagram: WG_Nonlinearities.svg
 caption: A waveguide model playing a melody. For the simple 1-pole filter used here, we obtain the constants $c_1 \approx 0.1786$ and $c_2 \approx 1.011$
 code:
 ```
@@ -186,12 +186,12 @@ code:
 
 
 
-## Flute Note Transitions
+## Note Transitions
 
 Notice that the model above has staccato notes. Why? Because I was too lazy to implement proper note transitions. If we attempt to change the length of the delay line while a note is playing, the output does not remotely resemble a legato sound (at best, we can change it slowly and obtain a slide whistle sound). In the legato transition of a real flute, where a tone hole is opened or closed, the bore effectively has a Y-junction during the transition. This can be better modeled by cross-fading between two fixed-length delay lines in the loop. In fact, two delay lines will suffice for any sequence of notes: one of them can always sound while the other secretly changes length.
 
 figure: sporthDiagram
-diagram: transWaveguide-1.2.svg
+diagram: WG_Transitions.svg
 caption: A waveguide model playing controllable legato notes. Move the "note" slider to control the notes.
 code:
 ```
@@ -234,13 +234,60 @@ code:
 ```
 
 
-
-## Abstract organic sounds
+## Experiment: Wildlife
 
 Placing a bandpass filter inside the delay loop leads to some interesting sounds.
 
 figure: sporthDiagram
-diagram: feedbackWaveguide-1.2.svg
+diagram: WG_Wildlife.svg
+caption: What animal is this?
+code:
+```
+	_ctrl 9 palias # 0 - 1, 0.6
+	
+	# smooth ctrl, amp ctrl, pitch ctrl, delay bandpass freq
+	_sctrl var _ctrl get 0.2 port _sctrl set
+	_actrl var _sctrl get dup 1 sdelay - abs 100000 * 0.1 port tanh _actrl set
+	_pctrl var 0.18 _actrl get * 0.82  _sctrl get * + _pctrl set
+	_dbpf var _pctrl get dup * 50 900 scale _dbpf set
+	_fb var _actrl get 10 * tanh 0.5 * 0.5 + _fb set
+	_freq1 392 varset
+	_tik var tick _tik set
+	
+	# exciter
+	0.001 noise
+	
+	# loop in, nonlinearity
+	(1 p) -1.068 * _fb get * dup dup dup * 1.02 + / swap 0.1 * + +
+	
+	# delay
+	0 (_freq1 get inv _tik get 0.05 tport) (20 inv) vdelay
+	
+	# branch 1: fundamental bandpass
+	dup _dbpf get 0.02 port 200 butbp
+	
+	# branch 2: 3rd harmonic bandpass
+	swap _dbpf get 3 * 0.02 port 200 butbp 0.96 * +
+	
+	# loop out
+	dup 1 pset
+	
+	# tremolo
+	_amp var dup 3 * 1 bal dup * 1 min _amp set
+	dup ((0.2 8 sine 20 +) 0.3 sine 0.4 +) * (1 _amp get -) cf
+	
+	# mix
+	0 0.01 -20 peaklim
+	dup dup 4 2 7000 zrev + 0.5 * +
+```
+
+
+## Experiment: Harmonic Flute
+
+Placing a bandpass filter inside the delay loop leads to some interesting sounds.
+
+figure: sporthDiagram
+diagram: WG_Feedback.svg
 caption: Abstract organic sounds.
 code:
 ```
@@ -264,10 +311,10 @@ code:
 
 ## Implementation Details
 
-### Original, Simplified and Related Forms
+### Related Forms
 
 figure: image
-image: formsWaveguides-1.2.svg
+image: WG_Forms.svg
 caption: Commonly used waveguide forms.
 
 Form A above is commonly found in educational material, because it's the one that directly matches the ideal physical model. However, it should generally not be used in practice. Instead, we've been using the simplified form B, which is obtained by changing the point at which the delay loop is sampled, then combining delays inside the loop. More generally, the input and output points as well as the order of elements inside the delay loop can often be modified with no audible difference, even if the model is not exactly equivalent. Form C is particularly useful when low latency is required.
@@ -276,13 +323,13 @@ Form A above is commonly found in educational material, because it's the one tha
 
 Digital delay lines are made of discrete samples, but we need to read them at arbitrary time points between samples. There are a few possible solutions to this:
 
-- Rounding the time to the nearest exact sample. This will cause the model to be detuned, especially at common sampling rates and higher pitches, where a difference of half a sample is easily perceptible.
+- Rounding the delay length to the nearest exact sample. This will cause the model to be detuned, especially at common sampling rates and higher pitches, where a difference of half a sample is easily perceptible.
 
-- Linear interpolation. This will cause undesirably different timbres depending on which note is being played. Pitches that cause even interpolation between two samples will have audible filtering and shorter decay.
+- Sampling the delay line with linear interpolation. This will cause undesirably different timbres depending on which note is being played. Delay lengths that are far from integer values will cause an audible filtering and shorter decay.
 
 - Polynomial interpolation. This is the simplest solution to give an acceptable result, and is used in all the examples above. Interpolating over four samples tends to be sufficient for musical purposes.
 
-- Resampling the delay loop. A more unusual solution, where we use a fixed or rounded delay length for the delay loop, but we process the entire loop at a different sample rate than the final output. This way, interpolation artifacts are not amplified by the delay loop. Depending on the inner filters being used, it's sometimes also useful to oversample the delay loop for quality.
+- Resampling the delay loop. A more unusual solution, where we use a fixed or rounded delay length, but we process the entire delay loop at a different sample rate than the final output. This way, interpolation artifacts are not amplified by the delay loop.
 
 
 

@@ -126,7 +126,7 @@
 			<data key="d3">
 				<x:List>
 					<y:Label LayoutParameter="{x:Static y:InteriorStretchLabelModel.Center}">
-						<y:Label.Text>NL(x)</y:Label.Text>
+						<y:Label.Text>NL</y:Label.Text>
 						<y:Label.Style>
 							<yjs:DefaultLabelStyle verticalTextAlignment="CENTER" horizontalTextAlignment="CENTER" wrapping="WORD" clipText="false" font="{y:GraphMLReference 1}" textFill="BLACK"/>
 						</y:Label.Style>
