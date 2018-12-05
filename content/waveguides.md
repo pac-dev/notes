@@ -116,7 +116,9 @@ code:
 	# delay and filter
 	0 (_delay_length get 0.001 * _tik get 0.03 tport) 0.1 vdelay
 	_loop_cutoff get _tik get 0.03 tport butlp
-	30 buthp
+	
+	# DC block
+	12 atone
 	
 	# fork feedback and output
 	dup 0 pset
@@ -153,7 +155,7 @@ code:
 	# feedback scale: (tanh(x*2)*5+x)*0.171818
 	_fb var _feedback get dup 2 * tanh 5 * + 0.1718 * _fb set
 	
-	# prepare beat, pitch and cutoff
+	# prepare beat, pitch and delay length
 	_seq "0 4 7 12 16 7 12 16" gen_vals
 	_beat var 4 metro _beat set
 	_freq var _beat get 0 _seq tseq 64 + mtof _freq set
@@ -170,12 +172,10 @@ code:
 	(_fb get _beat get 0.001 0.1 0.2 tenvx 0.2 * 0.8 + *)
 	* tanh +
 	
-	# delay and filter
+	# delay, filter and DC block
 	0 (_len get _tik get 0.001 tport) 0.1 vdelay
 	_loop_cutoff get _tik get 0.03 tport tone
-	
-	# DC block if feedback is positive
-	dup dcblk _feedback get 0 lt cf
+	dup 12 atone _feedback get 0 lt cf
 	
 	# fork feedback and output
 	dup 0 pset
@@ -200,8 +200,11 @@ code:
 	_exciter_cutoff 12 palias # 100 - 10000, 4000 (Hz)
 	_loop_cutoff 13 palias # 100 - 10000, 2300 (Hz)
 	_tik var tick _tik set
+	
 	# feedback scale: (tanh(x*2)*5+x)*0.171818
 	_fb var _feedback get dup 2 * tanh 5 * + 0.1718 * _fb set
+	
+	# prepare smooth note control, pitch and delay lengths
 	_snote var _note get 0.06 port _snote set
 	_seq "0 4 7 11" gen_vals
 	_freq1 var _snote get 0.5 + 2 / floor 2 *
@@ -212,31 +215,37 @@ code:
 	_seq tget 66 + mtof _freq2 set
 	_len2 var _freq2 get dup dup * 0.1786 * _loop_cutoff get / + inv
 	1.011 * sr inv - _len2 set
+	
 	# exciter
 	0.025 noise _exciter_cutoff get _tik get 0.03 tport butlp
+	
 	# feedback, NL
 	0 p _fb get * tanh +
-	# delay
-	dup
-	0 (_len1 get _tik get 0.001 tport) 0.1 vdelay
-	swap
-	0 (_len2 get _tik get 0.001 tport) 0.1 vdelay
-	_snote get
-	# tanh((abs(frac((x-0.5)/2)-0.5)-0.25)*30)*0.5
-	0.5 - 2 / frac 0.5 - abs 0.25 - 30 * tanh 1 + 0.5 * cf
-	#2 / 0.5 - frac round cf
-	# filter
+	
+	# delays
+	dup 0 (_len1 get _tik get 0.001 tport) 0.1 vdelay
+	swap 0 (_len2 get _tik get 0.001 tport) 0.1 vdelay
+	
+	# cross fade using smooth-square of note parameter
+	_snote get 0.5 - 2 / frac 0.5 - abs 0.25 - 30 * tanh 1 + 0.5 * cf
+	
+	# filter and DC block
 	_loop_cutoff get _tik get 0.03 tport tone
-	dup dcblk _feedback get 0 lt cf
-	# fork output/loop
+	dup 12 atone _feedback get 0 lt cf
+	
+	# fork feedback and output
 	dup 0 pset
+	
+	# some mixing
 	dup dup 0.5 3 1200 zrev + 0.75 * + 0 0.01 -15 peaklim
 ```
 
 
 ## Experiment: Wildlife
 
-Placing a bandpass filter inside the delay loop leads to some interesting sounds.
+When exploring waveguide synthesis, it's useful to have mental models and simplifications to work with. One such insight is to imagine that the looped delay line provides an infinite number of harmonics of its base frequency, some having more weight than others. Without any filters, the weights of harmonics are based on their harmonic distance: the simplest fractions, such as the fundamental, are the heaviest. This weight determines which harmonics are more likely to resonate, with the lighter ones generally being softer or absent (this is probabilistic when the exciter is based on noise). By adding filters into the loop, we shape the spectrum of those weights. When crossfading multiple delays in the loop, we intersect the spectra of their weighted harmonics.
+
+Still, the pitch modification caused by adding filters in the loop comes in as a separate concern. One practical solution is to play along with it: let the pitch fluctuate and enjoy the complex timbres created by adding combinations of filters in the loop and modulating them. These pitch fluctuations can be satisfyingly organic, especially when the context is not musical. This is, I believe, how pitch is handled in some xoxos instruments such as *Fauna* and *Elder Thing*. In the following example, the same approach is used to create organic animal calls. There are two parallel bandpass filters in the loop, one of which has three times the frequency of the other.
 
 figure: sporthDiagram
 diagram: WG_Wildlife.svg
@@ -284,27 +293,52 @@ code:
 
 ## Experiment: Harmonic Flute
 
-Placing a bandpass filter inside the delay loop leads to some interesting sounds.
+In the following example, an attempt is made to control the final pitch despite it being affected by two crossfaded filters in the loop. The formula introduced in the above section *Controlling the Pitch* is used, with one modification: we use the sum of the frequencies of both filters as value for $f_c$.
 
 figure: sporthDiagram
-diagram: WG_Feedback.svg
-caption: Abstract organic sounds.
+diagram: WG_Harmo.svg
+caption: Flute model with exaggerated simulation of higher registers.
 code:
 ```
-	_exciter_type 9 palias # 0 - 1
-	_delay_length 10 palias # 1 - 10, 5 (ms)
-	_feedback 11 palias # -1 - 1, 0.7
+	_bp_freq 14 palias # 80 - 4200, 1100 (Hz)
+	_lp_freq 13 palias # 80 - 10000, 3500 (Hz)
+	_crossfade 10 palias # 0 - 0.95, 0.6
+	_feedback 11 palias # -2 - 2, 1.4
+	_exciter_cutoff 12 palias # 80 - 10000, 700 (Hz)
 	_tik var tick _tik set
 	
-	# feedback scale: (tanh(x*2)*5+x)*0.171818
-	_fb var _feedback get dup 2 * tanh 5 * + 0.1718 * _fb set
+	# prepare feedback, beat, pitch and delay length
+	_fb var _feedback get dup 2 * tanh 5 * + 0.1718 * 
+	_bp_freq get 50000 / 1 + * _fb set
+	_seq "0 4 7 12 16 7 12 16" gen_vals
+	_beat var 4 metro _beat set
+	_freq var _beat get 0 _seq tseq 64 + mtof _freq set
+	_len var _freq get dup dup * 0.1786 * _lp_freq get _bp_freq get + / + inv
+	1.011 * sr inv - _len set
 	
 	# exciter
-	0.3 noise 1000 butlp
-	dup 2 metro 0 0.001 0.01 tenv * _exciter_type get cf
+	0.01 noise
+	_beat get dup 0.001 0.01 0.01 tenvx swap 0.001 0.08 0.03 tenvx + *
+	_exciter_cutoff get _tik get 0.03 tport butlp
 	
-	# delay and feedback
-	(_fb get) (_delay_length get 0.001 * _tik get 0.03 tport) 0.1 vdelay
+	# receive feedback, apply nonlinearity and beat
+	0 p
+	(_fb get _beat get 0.001 0.1 0.2 tenvx 0.4 * 0.6 + *)
+	* tanh +
+	
+	# delay
+	0 (_len get _tik get 0.001 tport) 0.1 vdelay
+	
+	# filters
+	dup _lp_freq get _bp_freq get + _tik get 0.03 tport tone
+	swap _bp_freq get _tik get 0.03 tport 1000 butbp 1.1 *
+	_crossfade get cf
+	
+	# fork feedback and output
+	dup 0 pset
+	
+	# some mixing
+	dup dup 0.5 3 1200 zrev + 0.75 * + 0 0.01 -15 peaklim
 ```
 
 
@@ -329,8 +363,11 @@ Digital delay lines are made of discrete samples, but we need to read them at ar
 
 - Polynomial interpolation. This is the simplest solution to give an acceptable result, and is used in all the examples above. Interpolating over four samples tends to be sufficient for musical purposes.
 
-- Resampling the delay loop. A more unusual solution, where we use a fixed or rounded delay length, but we process the entire delay loop at a different sample rate than the final output. This way, interpolation artifacts are not amplified by the delay loop.
+- Resampling the delay loop. A more unusual solution, where we use a fixed or rounded delay length, but we process the entire delay loop at a different samplerate than the final output. This way, interpolation artifacts are not amplified by the delay loop. The ratio between the samplerates is sometimes called the time step.
 
+### DC in the loop
+
+When experimenting with looped delay lines, the output will sometimes seem to paradoxically vanish at high feedback values. This is usually due to DC offset, that is, any slight positive or negative average offset gets amplified inside the loop until the signal gets squashed. This arises naturally when using non-linearities with too much slope at the origin, that is $|\mathrm{NL}'(0)| > 1$, assuming $\mathrm{NL}$ includes the feedback. The simplest solution is to use a high-pass filter in the loop. In the above examples, a one-pole 15Hz high pass filter is used.
 
 
 
