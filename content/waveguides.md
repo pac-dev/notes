@@ -1,20 +1,22 @@
 Title: Notes on Waveguide Synthesis
 Author: Pierre Cusa <pierre@osar.fr>
-Created: November 4, 2018
+Created: December 2018
+Source: https://github.com/pac-dev/notes
+History: https://github.com/pac-dev/notes/commits/master/content/waveguides.md
 
-# Notes on Waveguide Synthesis
-
-[Waveguide Synthesis][] is one of the most effective approaches to generating sounds with physically realistic traits. If you're not convinced of this, perhaps the polished waveguide models of [Chet Singer][] will change your mind. When researching the topic, I've found most material on waveguide synthesis to be heavy on the theory and yet lacking when it comes to application and implementation. In this notebook, I'll try to fill this gap by focusing on the implementation and applied exploration of waveguides. The text assumes basic knowledge of audio DSP.
+[Waveguide Synthesis][] is one of the most effective approaches to generating sounds with physically realistic traits. If you're not convinced of this, perhaps the polished waveguide models of [Chet Singer][] will change your mind. When researching the topic, I've found most material on waveguide synthesis to be heavy on the theory and yet lacking when it comes to application and implementation. This is why I decided to assemble my notes on the implementation and applied exploration of waveguides, using the occasion to play with interactive in-browser synthesis. This text assumes some knowledge of audio DSP.
 
 
 
 ## A Delay Line with Feedback
 
-We begin with a minimal, special case of a waveguide. Take a source signal (the *excitation*), and delay it by a short duration (the *delay length*). Then take the delayed signal, attenuate it by a certain amount (*feedback*), and feed it back into the delay along with the source signal. As the delay receives its own output in a loop, some frequencies will begin to emerge, creating a perceivable pitch, which is in simple cases the inverse of the delay length. If you play with the model below, you'll notice the delay length seems to double when feedback is negative. This naturally arises from the fact that a number is repeated after its sign is inverted twice. Negative feedback also changes the timbre, because all even harmonics cancel themselves out. This is useful in wind instrument waveguides, where the feedback sign depends on the type of bore: open-ended flute bores yield models with positive feedback; and closed bores (as in pan flutes) yield negative feedback.
+We begin with a minimal, special case of a waveguide more commonly known as a feedback comb filter. Take a source signal (the *excitation*), and delay it by a short duration (the *delay length*). Then take the delayed signal, attenuate it by a certain factor (the *feedback*), and feed it back into the delay along with the source signal. As the delay receives its own output in a loop, some frequencies will begin to emerge, creating a perceivable pitch, which in simple cases is the inverse of the delay length.
+
+If you play with the model below, you'll notice the pitch seems lower by an octave when feedback is negative. This naturally arises from the fact that a number is repeated after its sign is inverted twice, effectively doubling the delay length. Negative feedback also changes the timbre, because all even harmonics cancel themselves out. This is useful in wind instrument waveguides, where closed bores (such as pan flutes) are often modeled with negative feedback.
 
 figure: sporthDiagram
 diagram: WG_Feedback.svg
-caption: A delay line with feedback. This is also known as a feedback comb filter.
+caption: A delay line with feedback.
 code:
 ```
 	_exciter_type 9 palias # 0 - 1
@@ -31,18 +33,21 @@ code:
 	
 	# delay and feedback
 	(_fb get) (_delay_length get 0.001 * _tik get 0.03 tport) 0.1 vdelay
+	
+	# some mixing
+	0 0.01 -15 peaklim
 ```
 
-Another way of representing this type of model is with a [difference equation][], which can be useful during implementation, as an intermediate step or as reference. In this case the difference equation is:
+Another way of representing this type of model is with a [difference equation][], which is useful as it can be directly translated to an algorithm. In this case the difference equation is:
 
 $$
 y(n) = x(n-d) + ay(n-d)
 $$
 
-#### where:
+<div class=prelist>where:</div>
 
-- $y$ is a function representing the output signal, eg. $y(n)$ is the output sample at time $n$
-- $x$ is a function representing the input (exciter) signal, eg. $x(n)$ the input sample at time $n$
+- $y$ is the output signal, eg. $y(t)$ is the output sample at time $t$
+- $x$ is the input (exciter) signal, eg. $x(t)$ the input sample at time $t$
 - $n$ is the current time
 - $d$ is the delay length
 - $a$ is the feedback
@@ -83,13 +88,16 @@ code:
 	
 	# fork feedback and output
 	dup 0 pset
+	
+	# some mixing
+	0 0.01 -15 peaklim
 ```
 
 
 
 ## Nonlinearities
 
-Note how the previous model, when filtered, produces only short notes, even with maximum feedback. Can this be remedied? Raising the feedback above 1 would cause the amplitude to keep increasing theoretically forever (this would be instability). We've been simply multiplying the signal $x$ by the feedback value $a$, in other words, applying a linear transfer function $\mathrm{L}(x) = ax$. In real acoustic systems, louder sounds are more heavily absorbed by the medium, and the simplest way of modeling this is to use a non-linear transfer function such as $\mathrm{NL}(x) = \tanh(ax)$ that gives us lower feedback for high values. This will also allow sustained notes without instability.
+Note how the previous model, when filtered, produces only short notes, even with maximum feedback. Can this be remedied? Raising the feedback above 1 would cause the amplitude to keep increasing theoretically forever (this would be instability). We've been simply multiplying the signal $x$ by the feedback value $a$, in other words, applying a linear function $\mathrm{L}(x) = ax$. In real acoustic systems, louder sounds are more heavily absorbed by the medium, and the simplest way of modeling this is to use a [sigmoid][] non-linear function such as $\mathrm{NL}(x) = \tanh(ax)$ that gives us lower feedback for high values. This will also allow sustained notes without instability.
 
 figure: sporthDiagram
 diagram: WG_Nonlinearities.svg
@@ -118,24 +126,24 @@ code:
 	_loop_cutoff get _tik get 0.03 tport butlp
 	
 	# DC block
-	12 atone
+	30 atone
 	
 	# fork feedback and output
-	dup 0 pset
+	dup 0 pset 100 buthp 100 buthp
 ```
 
 
 
 ## Controlling the Pitch
 
-The first model's pitch was simply determined by the delay length. You may have noticed that's not the case anymore: change the inner filter's frequency, and the pitch also changes. Why? Simply because digital filters are based on delay, so by introducing a filter, we're changing the total length of the cumulative delay line. In order to make the model produce the desired pitch, we need to establish the relationship between delay length, filter frequency, and pitch. Should be easy to produce an exact solution, right? Not really. Depending on the filter, the final pitch might have register changes and inharmonicity yielding a pitch that's more of a psycho-acoustic impression than a mathematically precise value. This means an exact solution would require some real effort, but thankfully we don't actually need to use our brains: we can use regression instead! Just measure how the filter affects the pitch and fit an equation onto it. For simple lowpass filters, we obtain something in the form:
+The first model's pitch was simply determined by the delay length. You may have noticed that's not the case anymore: change the inner filter's frequency, and the pitch also changes. This is because digital filters are based on delay, so by introducing a filter, we're changing the total length of the cumulative delay line. In fact, the filters we're using have a phase delay that's different for every frequency. This makes it more difficult to find an exact solution to compensate for this delay, as the filter introduces slight inharmonicity, and it affects the pitch in a way that depends on the pitch. Thankfully we don't actually need to use our brains: we can use regression instead! Just measure how the filter affects the pitch and fit an equation onto it. For simple lowpass filters, we obtain something in the form:
 
 
 $$
 K = \frac{c_2}{f + \frac{c_1 f^2}{f_c}}
 $$
 
-#### where:
+<div class=prelist>where:</div>
 
 - $K$ is the delay length
 - $f$ is the desired pitch
@@ -175,12 +183,13 @@ code:
 	# delay, filter and DC block
 	0 (_len get _tik get 0.001 tport) 0.1 vdelay
 	_loop_cutoff get _tik get 0.03 tport tone
-	dup 12 atone _feedback get 0 lt cf
+	dup 30 atone _feedback get 0 lt cf
 	
 	# fork feedback and output
 	dup 0 pset
 	
 	# some mixing
+	100 buthp 100 buthp
 	dup dup 0.5 3 1200 zrev + 0.75 * + 0 0.01 -15 peaklim
 ```
 
@@ -188,7 +197,7 @@ code:
 
 ## Note Transitions
 
-Notice that the model above has staccato notes. Why? Because I was too lazy to implement proper note transitions. If we attempt to change the length of the delay line while a note is playing, the output does not remotely resemble a legato sound (at best, we can change it slowly and obtain a slide whistle sound). In the legato transition of a real flute, where a tone hole is opened or closed, the bore effectively has a Y-junction during the transition. This can be better modeled by cross-fading between two fixed-length delay lines in the loop. In fact, two delay lines will suffice for any sequence of notes: one of them can always sound while the other secretly changes length.
+Notice that the model above has staccato notes. Why? Because I was too lazy to implement proper note transitions. If we attempt to change the length of the delay line while a note is playing, the output does not remotely resemble a legato sound (at best, we can change it slowly and obtain a slide whistle sound). In the legato transition of a real flute, a tone hole is opened or closed, and the bore effectively has a Y-junction during the transition. This can be better modeled by cross-fading between two fixed-length delay lines in the loop. In fact, two delay lines will suffice for any sequence of notes: one of them can always sound while the other secretly changes length.
 
 figure: sporthDiagram
 diagram: WG_Transitions.svg
@@ -231,21 +240,23 @@ code:
 	
 	# filter and DC block
 	_loop_cutoff get _tik get 0.03 tport tone
-	dup 12 atone _feedback get 0 lt cf
+	dup 30 atone _feedback get 0 lt cf
 	
 	# fork feedback and output
 	dup 0 pset
 	
 	# some mixing
+	100 buthp 100 buthp
 	dup dup 0.5 3 1200 zrev + 0.75 * + 0 0.01 -15 peaklim
 ```
+
 
 
 ## Experiment: Wildlife
 
 When exploring waveguide synthesis, it's useful to have mental models and simplifications to work with. One such insight is to imagine that the looped delay line provides an infinite number of harmonics of its base frequency, some having more weight than others. Without any filters, the weights of harmonics are based on their harmonic distance: the simplest fractions, such as the fundamental, are the heaviest. This weight determines which harmonics are more likely to resonate, with the lighter ones generally being softer or absent (this is probabilistic when the exciter is based on noise). By adding filters into the loop, we shape the spectrum of those weights. When crossfading multiple delays in the loop, we intersect the spectra of their weighted harmonics.
 
-Still, the pitch modification caused by adding filters in the loop comes in as a separate concern. One practical solution is to play along with it: let the pitch fluctuate and enjoy the complex timbres created by adding combinations of filters in the loop and modulating them. These pitch fluctuations can be satisfyingly organic, especially when the context is not musical. This is, I believe, how pitch is handled in some xoxos instruments such as *Fauna* and *Elder Thing*. In the following example, the same approach is used to create organic animal calls. There are two parallel bandpass filters in the loop, one of which has three times the frequency of the other.
+However, complex filtering in the loop means the final pitch of the model will be much harder to control. One practical solution is to play along with it, since these pitch fluctuations can be satisfyingly organic, especially when the context is not musical. This is, I believe, how pitch is handled in some [xoxos instruments][] such as *Fauna* and *Elder Thing*. In the following example, the same approach is used to create organic animal calls. There are two parallel bandpass filters in the loop, one of which has three times the frequency of the other.
 
 figure: sporthDiagram
 diagram: WG_Wildlife.svg
@@ -291,13 +302,14 @@ code:
 ```
 
 
+
 ## Experiment: Harmonic Flute
 
-In the following example, an attempt is made to control the final pitch despite it being affected by two crossfaded filters in the loop. The formula introduced in the above section *Controlling the Pitch* is used, with one modification: we use the sum of the frequencies of both filters as value for $f_c$.
+The following example simulates the higher registers of a flute by means of a bandpass crossfaded with a lowpass in the loop, making the pitch harder to predict. Despite this, an attempt is made to keep the final pitch in tune with the original intended pitch. We use the same formula introduced in the above section *Controlling the Pitch*, with one modification: $f_c$ is now the sum of the frequencies of both filters.
 
 figure: sporthDiagram
 diagram: WG_Harmo.svg
-caption: Flute model with exaggerated simulation of higher registers.
+caption: Flute model with exaggerated higher registers.
 code:
 ```
 	_bp_freq 14 palias # 80 - 4200, 1100 (Hz)
@@ -351,7 +363,7 @@ figure: image
 image: WG_Forms.svg
 caption: Commonly used waveguide forms.
 
-Form A above is commonly found in educational material, because it's the one that directly matches the ideal physical model. However, it should generally not be used in practice. Instead, we've been using the simplified form B, which is obtained by changing the point at which the delay loop is sampled, then combining delays inside the loop. More generally, the input and output points as well as the order of elements inside the delay loop can often be modified with no audible difference, even if the model is not exactly equivalent. Form C is particularly useful when low latency is required.
+Form A above is commonly found in educational material, because it's the one that directly matches the physical model. However, it should generally not be used in practice. Instead, we've been using the simplified form B, which is obtained by changing the point at which the delay loop is sampled, then combining delays inside the loop. More generally, the input and output points as well as the order of elements inside the delay loop can often be modified with no audible difference, even if the model is not exactly equivalent. Form C is particularly useful when low latency is required.
 
 ### Delay Line Sampling and Interpolation
 
@@ -367,22 +379,35 @@ Digital delay lines are made of discrete samples, but we need to read them at ar
 
 ### DC in the loop
 
-When experimenting with looped delay lines, the output will sometimes seem to paradoxically vanish at high feedback values. This is usually due to DC offset, that is, any slight positive or negative average offset gets amplified inside the loop until the signal gets squashed. This arises naturally when using non-linearities with too much slope at the origin, that is $|\mathrm{NL}'(0)| > 1$, assuming $\mathrm{NL}$ includes the feedback. The simplest solution is to use a high-pass filter in the loop. In the above examples, a one-pole 15Hz high pass filter is used.
+When experimenting with looped delay lines, the output will sometimes seem to paradoxically vanish at high feedback values. This is usually due to DC offset, that is, any slight positive or negative average offset gets amplified inside the loop until the signal gets squashed. This arises when using non-linearities with too much slope at the origin, that is $|\mathrm{NL}'(0)| > 1$, assuming $\mathrm{NL}$ includes the feedback. The simplest solution is to use a high-pass filter in the loop. In the above examples, a one-pole 30Hz high pass filter is used.
 
 
 
+## Some Resources and Links
 
-[Waveguide Synthesis]: https://ccrma.stanford.edu/~jos/wg.html
-[JOS WG def]: https://ccrma.stanford.edu/~jos/pasp/Digital_Waveguides.html
-[JOS flute]: https://ccrma.stanford.edu/realsimple/vir_flute/vir_flute.pdf
+Waveguide synthesis related:
 
+<div markdown class=links>
+- [The Homepage of J. O. Smith](https://ccrma.stanford.edu/~jos/), who essentially created this area of research. Many useful resources are freely available on his page, including the especially relevant [book on physical modeling](https://ccrma.stanford.edu/~jos/pasp/).
+- [Chet Singer instruments](https://www.native-instruments.com/en/reaktor-community/reaktor-user-library/all/all/all/300659/) are, as far as I'm aware, the most realistic playable waveguide models.
+- [An archive of xoxos instruments](https://web.archive.org/web/20160307195246/http://xoxos.net/vst/vst.html#models), featuring some of the most creative and interesting waveguide models, often accompanied with highly informative documentation describing the internals. (Unfortunately, his [current website](https://www.xoxos.net/vst/) is quite broken).
+- [The DAFx Paper Archive](http://ant-s4.unibw-hamburg.de/dafx/paper-archive/index.html)
+</div>
+
+Tools that were used to create this interactive notebook:
+
+<div markdown class=links>
+- [Sporth](https://paulbatchelor.github.io/proj/sporth.html), an audio programming language by Paul Batchelor, is what powers the examples. I also made a [Sporth playground](https://audiomasher.org) and an [interactive version of his Sporth tutorial](https://audiomasher.org/learn).
+- [Python-Markdown](https://python-markdown.github.io/), [yEd Live](https://www.yworks.com/yed-live), and [dspnote](https://github.com/pac-dev/dspnote).
+</div>
+
+
+
+[Waveguide Synthesis]: https://ccrma.stanford.edu/~jos/swgt/Basics_Digital_Waveguide_Modeling.html
 [Chet Singer]: https://www.native-instruments.com/en/reaktor-community/reaktor-user-library/all/all/all/300659/
-[xoxos]: https://www.xoxos.net/nature/
-
-[Sporth]: https://paulbatchelor.github.io/proj/sporth.html
-[learn sporth]: https://audiomasher.org/learn
-
 [difference equation]: https://en.wikipedia.org/wiki/Linear_difference_equation
+[xoxos instruments]: https://web.archive.org/web/20160307195246/http://xoxos.net/vst/vst.html#models
+[sigmoid]: https://raphlinus.github.io/audio/2018/09/05/sigmoid.html
 
 [DSP1]: http://yehar.com/blog/?p=121
 [DSP2]: https://jackschaedler.github.io/circles-sines-signals/index.html
