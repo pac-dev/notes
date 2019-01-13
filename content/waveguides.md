@@ -261,6 +261,7 @@ However, complex filtering in the loop means the final pitch of the model will b
 figure: sporthDiagram
 diagram: WG_Wildlife.svg
 caption: What animal is this?
+url: https://audiomasher.org/patch/YEGRNJ
 code:
 ```
 	_ctrl 9 palias # 0 - 1, 0.6
@@ -310,6 +311,7 @@ The following example simulates the higher registers of a flute by means of a ba
 figure: sporthDiagram
 diagram: WG_Harmo.svg
 caption: Flute model with exaggerated higher registers.
+url: https://audiomasher.org/patch/U3U3B5
 code:
 ```
 	_bp_freq 14 palias # 80 - 4200, 1100 (Hz)
