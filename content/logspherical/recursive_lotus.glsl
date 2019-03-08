@@ -1,5 +1,6 @@
 /*
-Includes some SDF and raymarching functions by Inigo Quilez: http://iquilezles.org/
+Log-spherical tiled petals. The log-spherical mapping turns slab tiles repeated
+along the rho axis into concentric spherical shells.
 */
 
 precision mediump float;
@@ -50,13 +51,13 @@ void pR(inout vec2 p, float a) {
 
 void tile(in vec3 p, out vec3 sp, out vec3 tp, out vec3 rp, out float mul)
 {
-	float erho = length(p);
-	p = vec3(log(erho), acos(p.y / length(p)), atan(p.z, p.x));
+	float r = length(p);
+	p = vec3(log(r), acos(p.y / length(p)), atan(p.z, p.x));
 	p.y += kk1;
 	float xshrink = 1.0/(abs(p.y-M_PI)) + 1.0/(abs(p.y)) - 1.0/M_PI;
 	p.y += height;
 	p.z += p.x * 0.3;
-	mul = erho/lpscale/xshrink;
+	mul = r/lpscale/xshrink;
 	p *= lpscale;
 	sp = p;
 	p.x -= rho_offset + iTime*0.5;

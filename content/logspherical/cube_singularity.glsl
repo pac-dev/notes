@@ -1,37 +1,42 @@
 /*
-Includes some SDF and raymarching functions by Inigo Quilez: http://iquilezles.org/
+Log-polar tiled cubes. The log-polar mapping is applied to the xz coordinates of
+the 3D SDF. The remaining dimension is shrunk by a factor of length(xz). In this
+way, the mapping becomes uniform and the SDF distortion is greatly reduced.
 */
 
 precision mediump float;
-#define M_PI 3.1415926535897932384626433832795
-#define AA 2
 
 // Inputs
 varying vec2 iUV;
 uniform float iTime;
 uniform vec2 iRes;
 
-float dtime;
-float peak = 0.25;
-float base_cubsz = 0.96;
-float spiral_on = 0.;
-float cola = 0.26; // 0.45
-float colb = 0.65; // 0.9
-float colz = 0.19; // 0.1
-float shortrange = 0.22;
-float shortmax = 1.5;
+#define AA 2
+#define HEIGHT 0.25
+#define M_PI 3.1415926535897932384626433832795
+#define LONGSTEP (M_PI*4.)
 
-float camera_y = pow(sin(dtime*0.2), 3.)*0.2+0.7;
-float spiral = step(0.5, spiral_on)*atan(3./4.);
+float gTime;
 
-// From http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
-float sdBox( vec3 p, vec3 b )
+/* 
+The tiling switches between 3 different densities at regular time points. These
+switches are not instant, but propagate like a shockwave from the origin. So at
+any given time during the transitions, there are two different densities, and a
+boundary position between the two. These are stored in globals, set in main()
+and consumed in the sdf: 
+*/
+float gABPos;
+float gDensA;
+float gDensB;
+
+// Modified rom http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
+float sdCube( vec3 p, float b )
 {
 	vec3 d = abs(p) - b;
 	return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
 
-// Axis rotation taken from tdhooper
+// Axis rotation taken from tdhooper. R(p.xz, a) rotates "x towards z".
 void pR(inout vec2 p, float a) {
 	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
@@ -47,73 +52,75 @@ float sdSpike2D(vec2 p, float h)
 	return d;
 }
 
-// float density;
-// float lpscale;
-// float trans;
-float abPos;
-float densA;
-float densB;
-float scaleA;
-float scaleB;
+/*
+Tile space in a spiked log-polar grid.
 
-vec4 tile(in vec3 pin, out float cubsz)
+- in `pin`: point with length(pin.xz) precomputed in pin.w
+- out `density`: density of tiling
+- out `cubsz`: size of cube
+- returns: tiled point coordinates
+*/
+vec3 tile(in vec4 pin, out float density, out float cubsz)
 {
-	float erho = length(pin.xz);
-	float lpscale = mix(scaleA, scaleB, smoothstep(0., 0.1, erho-abPos));
+	float r = pin.w;
+	// switch densities in shockwaves
+	density = mix(gDensA, gDensB, smoothstep(0., 0.1, r-gABPos));
+	// log-polar transformation in xz; spike and proportional shrink in y
 	vec3 p = vec3(
-		log(erho), 
-		(pin.y-peak*0.1/(erho+0.1))/erho, 
+		log(r), 
+		(pin.y-HEIGHT*0.1/(r+0.1))/r, 
 		atan(pin.z, pin.x)
 	);
-	p *= lpscale;
-	//p.z -= p.x*0.5*flex_spiral;
-	p.x -= dtime*2.0;
-
-	// todo: approx sqrt from the existing log value
-	float absrc = sin(sqrt(erho)-dtime*0.5-M_PI)*0.5+0.5;
-	float cubrot = sin(p.x*0.3);
-	cubrot = smoothstep(0.65, 0.85, absrc);
-	cubsz = base_cubsz * (sin(p.x*0.1)*0.5+0.5) * 0.6 + 0.2;
-	cubsz = mix(cubsz, 0.96, smoothstep(0.7, 1.0, absrc));
-
-	pR(p.xz, spiral);
+	// scaling in the log-polar domain creates density
+	p *= density;
+	// rho-translation causes zooming
+	p.x -= gTime*2.0;
+	// make it a spiral by rotating the tiled plane
+	pR(p.xz, 0.6435); // atan(3/4)
+	// convert to single-tile coordinates
 	p.xz = fract(p.xz*0.5) * 2.0 - 1.0;
+	// scale and rotate the individual cubes
+	// using an oscillation that spreads from the center over time
+	float osc = sin(sqrt(r)-gTime*0.25-1.0);
+	float cubrot = smoothstep(0.5, 0.8, osc);
+	cubsz = sin(p.x*0.1)*0.29 + 0.5;
+	cubsz = mix(cubsz, 0.96, smoothstep(0.7, 1.0, abs(osc)));
 	pR(p.xy, cubrot);
-	return vec4(p, erho/lpscale);
+	return p;
 }
 
 float sdf(in vec3 pin)
 {
-	//todo don't do this twice
-	float erho = length(pin.xz);
-	float density = mix(densA, densB, smoothstep(0., 0.1, erho-abPos));
-	float cubsz;
-	vec4 tiled = tile(pin, cubsz);
-	float ret = sdBox(tiled.xyz, vec3(cubsz));
-	ret = ret*tiled.w;
+	// tile the coordinates and get cube distance
+	float r = length(pin.xz);
+	float cubsz, density; // out
+	vec3 tiled = tile(vec4(pin, r), density, cubsz);
+	float ret = sdCube(tiled, cubsz);
+	// adjust the distance based on how much scaling occured
+	ret *= r/density;
 
-	float pkofs = 3.3 * length(pin.xz) * cubsz / density;
-	float pk = sdSpike2D(vec2(length(pin.xz), pin.y), peak) - pkofs;
+	// avoid overstepping:
+	// add hidden surface to bring rays into the right tiles
+	float pkofs = r * cubsz / density;
+	float pk = sdSpike2D(vec2(r, pin.y), HEIGHT) - pkofs;
 	if (pk < 0.002) pk = ret;
 	ret = min(ret, pk);
-
+	// shorten steps near the peak
 	float shorten = length(pin - vec3(0., 0.25, 0.));
-	shorten = 1. + shortmax*(1.-smoothstep(0., shortrange, shorten));
+	shorten = 1. + 1.5*(1.-smoothstep(0., 0.22, shorten));
 	ret /= shorten;
 
 	return ret;
 }
 
+// Color the faces of cubes, reusing the tiling function.
 vec3 colr(in vec3 pin)
 {
-	float a = cola;
-	float b = colb;
-	float z = colz;
-	// float a = 0.6;
-	// float b = 0.4;
-	// float z = 0.;
-	float cubsz;
-	vec3 p = tile(pin, cubsz).xyz;
+	float a = 0.26;
+	float b = 0.65;
+	float z = 0.19;
+	float cubsz, density; // out
+	vec3 p = tile(vec4(pin, length(pin.xz)), density, cubsz);
 	if (p.x > abs(p.y) && p.x > abs(p.z)) return vec3(z,a,b);
 	if (p.x < -abs(p.y) && p.x < -abs(p.z)) return vec3(z,b,a)*0.7;
 	if (p.z > abs(p.x) && p.z > abs(p.y)) return vec3(z,a,a);
@@ -134,12 +141,9 @@ vec3 calcNormal(in vec3 pos)
 	);
 }
 
-float longStep = M_PI*4.;
-float fullCycle = longStep*3.;
-
-float densStep(float x)
+float time2density(float x)
 {
-	float fullMod = fract(x/fullCycle)*3.;
+	float fullMod = fract(x/(LONGSTEP*3.))*3.;
 	if (fullMod > 2.) return 45.;
 	else if (fullMod > 1.) return 25.;
 	else return 15.;
@@ -147,17 +151,17 @@ float densStep(float x)
 
 // Based on http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 void main() {
-	dtime = iTime+1.8;
-	float ltime = dtime + M_PI*6.3;
-	abPos = smoothstep(0.45, 0.6, fract(ltime/longStep))*2.2-0.2;
-	densA = densStep(ltime);
-	densB = densStep(ltime-longStep);
-	scaleA = floor(densA)/M_PI;
-	scaleB = floor(densB)/M_PI;
+	// automate the shockwave transitions between densities
+	gTime = iTime+1.8;
+	float ltime = gTime + M_PI*6.3;
+	gABPos = smoothstep(0.45, 0.6, fract(ltime/LONGSTEP))*2.2-0.2;
+	gDensA = floor(time2density(ltime))/M_PI;
+	gDensB = floor(time2density(ltime-LONGSTEP))/M_PI;
 
 	vec2 fragCoord = iUV*iRes;
 
 	 // camera movement	
+	float camera_y = pow(sin(gTime*0.2), 3.)*0.2+0.7;
 	vec3 ro = vec3(0., camera_y, 1.);
 	vec3 ta = vec3(0.0, 0.0, 0.0);
 	// camera matrix

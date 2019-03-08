@@ -26,15 +26,15 @@ float sdf(in vec3 p3d)
 {
 	// Choose 2 dimensions and apply the forward log-polar map
 	vec2 p = p3d.xz;
-	float erho = length(p); // (Store e^rho for reuse)
-	p = vec2(log(erho), atan(p.y, p.x));
+	float r = length(p);
+	p = vec2(log(r), atan(p.y, p.x));
 
 	// Scale everything so it will fit nicely in the ]-pi,pi] interval
 	p *= lpscale;
-	float mul = erho/lpscale;
+	float mul = r/lpscale;
 
 	// Apply rho-translation, which yields zooming
-	p.x -= rho_offset + iTime;
+	p.x -= rho_offset + iTime*lpscale*0.23;
 	
 	// Turn tiled coordinates into single-tile coordinates
 	p = fract(p*0.5) * 2.0 - 1.0;

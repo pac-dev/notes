@@ -26,7 +26,7 @@ uniform vec2 iRes;
 
 // These lines are parsed by dspnote to generate sliders
 uniform float thickness; //dspnote param: 0.01 - 0.1
-uniform float density; //dspnote param: 5 - 16, 8
+uniform float density; //dspnote param: 6 - 16, 8
 uniform float rho_offset; //dspnote param: 0 - 10
 uniform float camera_y; //dspnote param: 0.5 - 2
 
@@ -37,8 +37,8 @@ float lpscale = floor(density)/M_PI;
 float map(in vec3 p)
 {
 	// Apply the forward log-spherical map
-	float erho = length(p); // (Store e^rho for reuse)
-	p = vec3(log(erho), acos(p.z / length(p)), atan(p.y, p.x));
+	float r = length(p);
+	p = vec3(log(r), acos(p.z / length(p)), atan(p.y, p.x));
 
 	// Get a scaling factor to compensate for pinching at the poles
 	// (there's probably a better way of doing this)
@@ -59,7 +59,7 @@ float map(in vec3 p)
 	ret = min(ret, length(p.xy) - thickness);
 
 	// Compensate for all the scaling that's been applied so far
-	float mul = erho/lpscale/xshrink;
+	float mul = r/lpscale/xshrink;
 	return ret * mul / shorten;
 }
 
@@ -114,7 +114,7 @@ void main() {
 		// raymarch
 		const float tmax = 3.5;
 		float t = 0.0;
-		for( int i=0; i<256; i++ )
+		for( int i=0; i<80; i++ )
 		{
 			vec3 pos = ro + t*rd;
 			float h = map(pos);

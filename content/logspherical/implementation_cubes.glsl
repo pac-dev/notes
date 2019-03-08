@@ -19,12 +19,12 @@ float shorten = 1.14;
 // Inverse log-spherical map
 vec3 ilogspherical(in vec3 p)
 {
-	float erho = exp(p.x);
+	float r = exp(p.x);
 	float sintheta = sin(p.y);
 	return vec3(
-		erho * sintheta * cos(p.z),
-		erho * sintheta * sin(p.z),
-		erho * cos(p.y)
+		r * sintheta * cos(p.z),
+		r * sintheta * sin(p.z),
+		r * cos(p.y)
 	);
 }
 
@@ -56,8 +56,8 @@ float layer(in vec3 p, in float twost)
 float sdfScene(in vec3 pin)
 {
 	// Apply the forward log-spherical map (shell tiles -> box tiles)
-	float erho = length(pin); // (Store e^rho for reuse)
-	vec3 p = vec3(log(erho), acos(pin.z / length(pin)), atan(pin.y, pin.x));
+	float r = length(pin);
+	vec3 p = vec3(log(r), acos(pin.z / length(pin)), atan(pin.y, pin.x));
 
 	// Apply rho-translation, which yields zooming
 	p.x -= iTime*0.2;
