@@ -27,20 +27,22 @@ uniform float iTime;
 uniform vec2 iRes;
 
 // These lines are parsed by dspnote to generate sliders
-uniform float side; //dspnote param: 0.01 - 0.7, 0.5
+uniform float density; //dspnote param: 1 - 5, 2
+uniform float side; //dspnote param: 0.2 - 0.6, 0.5
 uniform float twist; //dspnote param: 0 - 1
 
 float shorten = 1.14;
+float dens, idens, stepZoom;
 
 // Inverse log-spherical map
 vec3 ilogspherical(in vec3 p)
 {
-	float r = exp(p.x);
+	float erho = exp(p.x);
 	float sintheta = sin(p.y);
 	return vec3(
-		r * sintheta * cos(p.z),
-		r * sintheta * sin(p.z),
-		r * cos(p.y)
+		erho * sintheta * cos(p.z),
+		erho * sintheta * sin(p.z),
+		erho * cos(p.y)
 	);
 }
 
@@ -68,11 +70,6 @@ float sdCone( vec3 p, vec2 c )
 void pR(inout vec2 p, float a) {
 	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
-
-// density, its inverse, and the resulting zoom between each recursion level
-float dens = 2.0;
-float idens = 1.0/dens;
-float stepZoom = exp(idens);
 
 // Object placement depends on the density and is lazily hardcoded.
 // Objects should be inside the spherical shell reference tile
@@ -104,7 +101,7 @@ float sdf(in vec3 pin)
 	float xstep = floor(p.x*dens) + (iTime*0.2)*dens;
 	
 	// Turn tiled coordinates into single-tile coordinates
-	p.x = fract(p.x*dens)*idens;
+	p.x = mod(p.x, idens);
 
 	// Apply inverse log-spherical map (box tile -> shell tile)
 	p = ilogspherical(p);
@@ -114,7 +111,7 @@ float sdf(in vec3 pin)
 	ret = min(ret, layer(p/stepZoom, (xstep+1.0)*twist)*stepZoom);
 
 	// Compensate for scaling applied so far
-	ret = ret * exp(xstep*0.5) / shorten;
+	ret = ret * exp(xstep*idens) / shorten;
 	
 	// Compensate for discontinuities in the field by adding some hidden
 	// geometry to bring rays into the right shells
@@ -154,7 +151,7 @@ vec3 color(in vec3 p)
 
 	// If shell contents do overlap, we need to repeat a lot of sdf() ops
 	float r = length(p);
-	p = vec3(log(r), acos(p.z / length(p)), atan(p.y, p.x));
+	p = vec3(log(r), acos(p.z / r), atan(p.y, p.x));
 	p.x -= iTime*0.2;
 	float ofs = (iTime*0.2)*dens;
 	float xstep = floor(p.x*dens) + ofs;
@@ -182,6 +179,12 @@ vec3 calcNormal(in vec3 pos)
 
 // Based on http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 void main() {
+
+	// inverse density, and the resulting zoom between each recursion level
+	dens = density;
+	idens = 1.0/dens;
+	stepZoom = exp(idens);
+
 	vec2 fragCoord = iUV*iRes;
 
 	 // camera movement	

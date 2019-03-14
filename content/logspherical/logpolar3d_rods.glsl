@@ -16,7 +16,7 @@ uniform vec2 iRes;
 // These lines are parsed by dspnote to generate sliders
 uniform float camera_y; //dspnote param: 0.5 - 3
 uniform float rho_offset; //dspnote param: 0 - 10
-uniform float density; //dspnote param: 3 - 50, 13
+uniform float density; //dspnote param: 5 - 50, 13
 uniform float radius; //dspnote param: 0.05 - 1, 0.9
 
 float height = 0.01;
@@ -37,7 +37,7 @@ float sdf(in vec3 p3d)
 	p.x -= rho_offset + iTime*lpscale*0.23;
 	
 	// Turn tiled coordinates into single-tile coordinates
-	p = fract(p*0.5) * 2.0 - 1.0;
+	p = mod(p, 2.0) - 1.0;
 
 	// Get rounded cylinder distance, using the original Y coordinate shrunk
 	// proportionally to the other dimensions

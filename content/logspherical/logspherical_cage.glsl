@@ -44,7 +44,7 @@ float map(in vec3 p)
 	// (there's probably a better way of doing this)
 	float xshrink = 1.0/(abs(p.y-M_PI)) + 1.0/(abs(p.y)) - 1.0/M_PI;
 
-	// scale to fit in the ]-pi,pi] interval
+	// Scale to fit in the ]-pi,pi] interval
 	p *= lpscale;
 
 	// Apply rho-translation, which yields zooming
