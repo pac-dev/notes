@@ -42,8 +42,8 @@ void pR(inout vec2 p, float a) {
 
 // density, its inverse, and the resulting zoom between each recursion level
 float dens = 2.0;
-float idens = 1.0/dens;
-float stepZoom = exp(idens);
+float idens;
+float stepZoom;
 
 float layer(in vec3 p, in float twost)
 {
@@ -130,6 +130,8 @@ vec3 color(in vec3 p, in vec3 nor)
 
 // Based on http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 void main() {
+	idens = 1.0/dens;
+	stepZoom = exp(idens);
 	vec2 fragCoord = iUV*iRes;
 
 	 // camera movement	

@@ -13,11 +13,6 @@ uniform float iTime;
 uniform vec2 iRes;
 
 // These lines are parsed by dspnote to generate sliders
-uniform float kk1; //dspnote param: -5 - 5, 0
-uniform float kk2; //dspnote param: -5 - 5, 0
-uniform float kk3; //dspnote param: -5 - 5, 0
-
-
 uniform float density; //dspnote param: 3 - 35, 26
 uniform float height; //dspnote param: -0.8 - 0.8, 0
 uniform float fov; //dspnote param: 0.5 - 3, 1.5
@@ -26,17 +21,15 @@ uniform float camera_y; //dspnote param: 0.4 - 2
 // 25 // 8.5 // 0.5 // 1.83
 
 float camera_ty = -0.17;
-float interpos = -0.75;
+float interpos = -0.5;
 float shorten = 1.;
 float line_width = 0.017;
 float rot_XY = 0.;
 float rot_YZ = 0.785;
 float radius = 0.05;
 float rho_offset = 0.;
-float vcut = floor(density*0.25)*2.+0.9;
-
-
-float lpscale = floor(density)/M_PI;
+float vcut;
+float lpscale;
 
 float sdCone( vec3 p, vec2 c )
 {
@@ -53,7 +46,6 @@ void tile(in vec3 p, out vec3 sp, out vec3 tp, out vec3 rp, out float mul)
 {
 	float r = length(p);
 	p = vec3(log(r), acos(p.y / length(p)), atan(p.z, p.x));
-	p.y += kk1;
 	float xshrink = 1.0/(abs(p.y-M_PI)) + 1.0/(abs(p.y)) - 1.0/M_PI;
 	p.y += height;
 	p.z += p.x * 0.3;
@@ -62,7 +54,6 @@ void tile(in vec3 p, out vec3 sp, out vec3 tp, out vec3 rp, out float mul)
 	sp = p;
 	p.x -= rho_offset + iTime*0.5;
 	p = fract(p*0.5) * 2.0 - 1.0;
-	p.y += kk3;
 	p.x *= xshrink;
 	tp = p;
 	pR(p.xy, rot_XY);
@@ -161,6 +152,8 @@ vec3 gain(vec3 v, float k)
 
 // Based on http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 void main() {
+	vcut = floor(density*0.25)*2.+0.9;
+	lpscale = floor(density)/M_PI;
 	vec2 fragCoord = iUV*iRes;
 
 	 // camera movement	

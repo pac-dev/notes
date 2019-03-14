@@ -32,7 +32,7 @@ uniform float camera_y; //dspnote param: 0.5 - 2
 
 float shorten = 1.26;
 float height = 0.01;
-float lpscale = floor(density)/M_PI;
+float lpscale;
 
 float map(in vec3 p)
 {
@@ -83,6 +83,7 @@ vec3 calcNormal(in vec3 pos)
 
 // Based on http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 void main() {
+	lpscale = floor(density)/M_PI;
 	vec2 fragCoord = iUV*iRes;
 
 	 // camera movement	

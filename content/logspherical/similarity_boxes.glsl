@@ -75,7 +75,7 @@ void pR(inout vec2 p, float a) {
 // Objects should be inside the spherical shell reference tile
 // (ie. between its inner and outer spheres)
 vec2 hiddenConeBottom = normalize(vec2(1.0, 0.55));
-vec2 hiddenConeSides = normalize(vec2(1.0, side * 1.3));
+vec2 hiddenConeSides;
 vec3 floorPos = vec3(0.0, 1.125, 0.0);
 
 float layer(in vec3 p, in float twost)
@@ -184,6 +184,7 @@ void main() {
 	dens = density;
 	idens = 1.0/dens;
 	stepZoom = exp(idens);
+	hiddenConeSides = normalize(vec2(1.0, side * 1.3));
 
 	vec2 fragCoord = iUV*iRes;
 

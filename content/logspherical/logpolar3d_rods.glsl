@@ -20,7 +20,7 @@ uniform float density; //dspnote param: 5 - 50, 13
 uniform float radius; //dspnote param: 0.05 - 1, 0.9
 
 float height = 0.01;
-float lpscale = floor(density)/M_PI;
+float lpscale;
 
 float sdf(in vec3 p3d)
 {
@@ -69,6 +69,7 @@ vec3 calcNormal(in vec3 pos)
 
 // Based on http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 void main() {
+	lpscale = floor(density)/M_PI;
 	vec2 fragCoord = iUV*iRes;
 
 	 // camera movement	
