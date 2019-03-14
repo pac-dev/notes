@@ -9,3 +9,4 @@ templateDir: templates
 contentDir: content
 staticDir: ../dspnote/example/static
 outDir: ../../web/osar/notes
+chromeDriver: /mnt/d/bin/_devbin/network/chromedriver.exe
