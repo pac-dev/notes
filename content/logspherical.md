@@ -74,7 +74,7 @@ code: distortion_polka.glsl
 The above 2D map can be simply applied in 3D space by picking two dimensions to transform. However, this means the geometry will get scaled in those two dimensions but not in the remaining dimension (in fact, geometry will be infinitely slim at the origin, and infinitely fat at the horizon). This is a problem because SDF scaling must be uniform, but we can easily correct this by scaling the remaining dimension proportionally to the others, using the same $r$ factor as before. If we're tiling spheres, this would give us the following distance function:
 
 ```glsl
-#define SCALE 6.0/PI
+#define SCALE (6.0/PI)
 
 float sdf(in vec3 pos3d)
 {
