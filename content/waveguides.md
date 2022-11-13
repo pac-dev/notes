@@ -44,13 +44,15 @@ $$
 y(n) = x(n-d) + ay(n-d)
 $$
 
-<div class=prelist>where:</div>
+<div markdown class=tightList>
+where:
 
 - $y$ is the output signal, eg. $y(t)$ is the output sample at time $t$
 - $x$ is the input (exciter) signal, eg. $x(t)$ the input sample at time $t$
 - $n$ is the current time
 - $d$ is the delay length
 - $a$ is the feedback
+</div>
 
 
 
@@ -143,12 +145,14 @@ $$
 K = \frac{c_2}{f + \frac{c_1 f^2}{f_c}}
 $$
 
-<div class=prelist>where:</div>
+<div markdown class=tightList>
+where:
 
 - $K$ is the delay length
 - $f$ is the desired pitch
 - $f_c$ is the cutoff frequency of the inner filter
 - $c_1$ and $c_2$ are constants tied to the inner filter algorithm being used
+</div>
 
 figure: sporthDiagram
 diagram: WG_Nonlinearities.svg
@@ -372,11 +376,8 @@ Form A above is commonly found in educational material, because it's the one tha
 Digital delay lines are made of discrete samples, but we need to read them at arbitrary time points between samples. There are a few possible solutions to this:
 
 - Rounding the delay length to the nearest exact sample. This will cause the model to be detuned, especially at common sampling rates and higher pitches, where a difference of half a sample is easily perceptible.
-
 - Sampling the delay line with linear interpolation. This will cause undesirably different timbres depending on which note is being played. Delay lengths that are far from integer values will cause an audible filtering and shorter decay.
-
 - Polynomial interpolation. This is the simplest solution to give an acceptable result, and is used in all the examples above. Interpolating over four samples tends to be sufficient for musical purposes.
-
 - Resampling the delay loop. A more unusual solution, where we use a fixed or rounded delay length, but we process the entire delay loop at a different samplerate than the final output. This way, interpolation artifacts are not amplified by the delay loop. The ratio between the samplerates is sometimes called the time step.
 
 ### DC in the loop
@@ -389,19 +390,15 @@ When experimenting with looped delay lines, the output will sometimes seem to pa
 
 Waveguide synthesis related:
 
-<div markdown class=links>
 - [The Homepage of J. O. Smith](https://ccrma.stanford.edu/~jos/), who essentially created this area of research. Many useful resources are freely available on his page, including the especially relevant [book on physical modeling](https://ccrma.stanford.edu/~jos/pasp/).
 - [Chet Singer instruments](https://www.native-instruments.com/en/reaktor-community/reaktor-user-library/all/all/all/300659/) are, as far as I'm aware, the most realistic playable waveguide models.
 - [An archive of xoxos instruments](https://web.archive.org/web/20160307195246/http://xoxos.net/vst/vst.html#models), featuring some of the most creative and interesting waveguide models, often accompanied with highly informative documentation describing the internals. (Unfortunately, his [current website](https://www.xoxos.net/vst/) is quite broken).
 - [The DAFx Paper Archive](http://ant-s4.unibw-hamburg.de/dafx/paper-archive/index.html)
-</div>
 
 Tools that were used to create this interactive notebook:
 
-<div markdown class=links>
 - [Sporth](https://paulbatchelor.github.io/proj/sporth.html), an audio programming language by Paul Batchelor, is what powers the examples. I also made a [Sporth playground](https://audiomasher.org) and an [interactive version of his Sporth tutorial](https://audiomasher.org/learn).
 - [Python-Markdown](https://python-markdown.github.io/), [yEd Live](https://www.yworks.com/yed-live), and [dspnote](https://github.com/pac-dev/dspnote).
-</div>
 
 
 
