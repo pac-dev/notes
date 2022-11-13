@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="863px" height="660px" overflow="hidden" viewBox="0 0 863 660" xmlns="http://www.w3.org/2000/svg">
+<filter id="blurMe" x="-40%" width="180%">
+<feGaussianBlur in="SourceGraphic" stdDeviation="12,0" />
+</filter>
+ <rect width="863px" height="660px" fill="#fff"/>
+ <clipPath id="ygc83_0">
+  <rect x="25" y="25" width="812.75" height="610"/>
+ </clipPath>
+ <g clip-path="url(#ygc83_0)">
+  <g transform="translate(262.75 270)" image-rendering="auto" shape-rendering="auto">
+   <rect x="-120" y="-240" width="150" height="120"/>
+   <ellipse cx="-90" cy="-180" rx="22.5" ry="22.5" fill="#fff"/>
+   <rect x="60" y="-240" width="150" height="120"/>
+   <ellipse cx="120" cy="-180" rx="22.5" ry="22.5" fill="#fff"/>
+   <rect x="240" y="-240" width="150" height="120"/>
+   <ellipse cx="330" cy="-180" rx="22.5" ry="22.5" fill="#fff"/>
+   <rect x="420" y="-240" width="150" height="120"/>
+   <ellipse cx="540" cy="-180" rx="22.5" ry="22.5" fill="#fff"/>
+   <svg x="-78" y="-60" width="588" height="240" preserveAspectRatio="none" version="1.1" viewBox="0 0 208 143.6012" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(-18.17 -21.24)" stroke-linecap="round">
+     <rect x="18.17" y="21.24" width="208" height="143.6" fill="#fff" fill-rule="evenodd" stroke="#000" stroke-width=".5" style="paint-order:stroke markers fill"/>
+     <path d="m32.12 145.4c14.4-0.069 27.07-22.27 35.44-36.62 15.96-27.38 19.06-41.48 40.75-69.54 3.961-5.121 11.05-9.191 17.47-9.38 14.4 0.0692 27.08 22.27 35.44 36.62 15.96 27.38 19.06 41.48 40.75 69.54 3.961 5.121 11.05 9.191 17.47 9.38" fill="none" stroke="#f00" style="paint-order:stroke markers fill"/>
+     <path d="m125.8 122.3h5.069m-5.069-23.1h5.069m-5.069-23.1h5.069m-5.069-23.1h5.069m-5.069-23.1h5.069m-5.069 6e-3h1.935m-1.935 115.5v-120.3m-100.1 120.3h198.1m-4.344-3.304v6.747m-187.3-6.747v6.747" fill="none" stroke="#000" stroke-width=".5" style="paint-order:stroke markers fill"/>
+    </g>
+   </svg>
+   <rect x="150" y="240" width="150" height="120"/>
+   <ellipse cx="225" cy="300" rx="22.5" ry="22.5" fill="#fff" filter="url(#blurMe)"/>
+   <path transform="matrix(6.1232e-17 1 -1 6.1232e-17 15 -120)" d="m225 12v-12l15 15-15 15v-12h-225v-6z"/>
+   <path transform="matrix(6.1232e-17 1 -1 6.1232e-17 465 -120)" d="m225 12v-12l15 15-15 15v-12h-225v-6z"/>
+   <path transform="matrix(6.1232e-17 1 -1 6.1232e-17 165 -120)" d="m92 12v-12l15 15-15 15v-12h-92v-6z"/>
+   <path transform="matrix(6.1232e-17 1 -1 6.1232e-17 315 -120)" d="m92 12v-12l15 15-15 15v-12h-92v-6z"/>
+   <path transform="matrix(6.1232e-17 1 -1 6.1232e-17 240 157)" d="m62 12v-12l15 15-15 15v-12h-62v-6z"/>
+   <rect x="-232.75" y="-240" width="105.5" height="120" fill="#ff8c00" fill-opacity="0"/>
+   <g transform="translate(-232.75 -240)">
+    <text transform="translate(52.75 33.8)" fill="rgb(0,0,0)" font-family="'Arial'" font-size="20px" text-anchor="middle" xml:space="preserve"><tspan x="0" dy="18.4px"><tspan font-weight="bold">sub-frame</tspan></tspan><tspan x="0" dy="30px"><tspan font-weight="bold">images</tspan></tspan></text>
+   </g>
+   <rect x="-232.75" y="-30" width="105.5" height="120" fill="#ff8c00" fill-opacity="0"/>
+   <g transform="translate(-232.75 -30)">
+    <text transform="translate(52.75 33.8)" fill="rgb(0,0,0)" font-family="'Arial'" font-size="20px" text-anchor="middle" xml:space="preserve"><tspan x="0" dy="18.4px"><tspan font-weight="bold">shutter</tspan></tspan><tspan x="0" dy="30px"><tspan font-weight="bold">function</tspan></tspan></text>
+   </g>
+   <rect x="-225" y="240" width="90" height="120" fill="#ff8c00" fill-opacity="0"/>
+   <g transform="translate(-225 240)">
+    <text transform="translate(45 33.8)" fill="rgb(0,0,0)" font-family="'Arial'" font-size="20px" text-anchor="middle" xml:space="preserve"><tspan x="0" dy="18.4px"><tspan font-weight="bold">final</tspan></tspan><tspan x="0" dy="30px"><tspan font-weight="bold">frame</tspan></tspan></text>
+   </g>
+  </g>
+ </g>
+</svg>

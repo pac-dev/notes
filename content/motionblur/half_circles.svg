@@ -1,0 +1,42 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='800px' height='600px'>
+<g transform="scale(0.4) translate(1000,750)">
+
+<circle cx="525" cy="0" r="375" stroke="none" fill="#ddd" />
+
+<g id="grid" fill="none" stroke="lightblue" stroke-width="6">
+  <circle r="150" cx="0" cy="0" />
+  <circle r="300" cx="0" cy="0" />
+  <circle r="450" cx="0" cy="0" />
+  <circle r="600" cx="0" cy="0" />
+  <circle r="750" cx="0" cy="0" />
+  <circle r="900" cx="0" cy="0" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(22.5)" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(45)" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(67.5)" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(90)" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(112.5)" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(135)" />
+  <line x1="0" y1="-1000" x2="0" y2="1000" transform="rotate(157.5)" />
+</g>
+
+<!--g id="axes" stroke="darkblue" stroke-width="6">
+  <line x1="-1000" y1="0" x2="1000" y2="0"/>
+  <line x1="0" y1="-1000" x2="0" y2="1000"/>
+</g-->
+
+<g id="arcs" fill="none" stroke-width="12">
+  <path d="M150,0 a375,375 0 0,0 750,0" stroke="red" />
+  <path d="M150,0 a375,375 0 0,1 750,0" stroke="green" />
+</g>
+
+<g id="txt" font-size="110" font-weight="bold" text-anchor="middle" dominant-baseline="middle">
+  <text x="550" y="0">ρ=1</text>
+  <text x="-400" y="0">ρ=0</text>
+  <text x="550" y="-470" fill="green">h(r)</text>
+  <text x="550" y="480" fill="red">-h(r)</text>
+</g>
+
+</g>
+</svg>
