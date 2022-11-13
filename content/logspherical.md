@@ -210,7 +210,7 @@ code: recursive_lotus.glsl
 figure: shaderFig
 runnable: true
 caption: Cube Singularity
-url: https://github.com/pac-dev/notes/blob/master/content/logspherical/cube_singularity.glsl
+url: https://www.shadertoy.com/view/wdsSWs
 code: cube_singularity.glsl
 
 
@@ -222,6 +222,9 @@ While I haven't found any previous utilization of the log-spherical transformati
 - Applying the 2D log-polar transform to 3D SDFs has been done previously, but apparently only as a cursory exploration, see knighty's [Spiral tiling](https://www.shadertoy.com/view/ls2GRz) shader.
 - Self-similar structures and zoomers have also been implemented in shaders using loops, as opposed to the loopless techniques described here. Looping strongly limits the number of visible levels of recursion for realtime, however, it allows more freedom in geometry placement while giving an exact distance. Some examples of this: [Gimbal Harmonics](https://www.shadertoy.com/view/llS3zd); [Infinite Christmas Tree](https://www.shadertoy.com/view/4ltBzf), possibly Quite's [zeo-x-s](https://youtu.be/eKbTaxDEtXY?t=333).
 - Outside of SDF raymarching, self-similar structures have been explored in many different ways, a popular example being the works of [John Edmark](http://www.johnedmark.com).
+
+If you want to explore these techniques, or creative shader programming in general, [Shadertoy](https://www.shadertoy.com/) is where a lot of the action happens these days. I've made [an account](https://www.shadertoy.com/user/dracusa) where I'll make sure to post some more experiments with these techniques.
+
 
 
 [signed distance fields]: http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/

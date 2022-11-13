@@ -31,7 +31,6 @@ uniform float rho_offset; //dspnote param: 0 - 10
 uniform float camera_y; //dspnote param: 0.5 - 2
 
 float shorten = 1.26;
-float height = 0.01;
 float lpscale;
 
 float map(in vec3 p)
