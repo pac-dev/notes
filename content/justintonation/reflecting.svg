@@ -1,0 +1,53 @@
+<svg width="600" height="450" viewBox="0 0 600 450"
+xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+font-size="18" style="font-family: Georgia, serif;">
+    <style>
+        .trigger {
+            cursor: pointer;
+            user-select: none;
+        }
+        line, .trigger rect {
+            stroke: #d6d6d6;
+            fill: white;
+            stroke-width: 3;
+        }
+        .trigger text { text-anchor: middle; }
+        text { white-space: pre; }
+    </style>
+    <!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
+    <path d="m336,14l0,42l-36,27l0,350l-250,0l0,-350l250,-33l0,-36" fill="#e2e2ff" stroke="#d6d6d6" stroke-width="3"/>
+    <path d="m376,14l0,36l174,33l0,350l-250,0l0,-350l36,-30l0,-39" fill="#ffe9d6" stroke="#d6d6d6" stroke-width="3"/>
+    <g fill="white">
+        <rect width="210" height="310" x="320" y="103"/>
+        <rect width="210" height="310" x="70" y="103"/>
+        <rect width="460" height="30" x="70" y="173"/>
+    </g>
+    <text text-anchor="end" x="270" y="153">Chord 1 (2:20 - 2:40)</text>
+    <text text-anchor="start" x="330" y="153">Chord 2 (2:40 - 3:00)</text>
+    <text text-anchor="middle" x="300" y="193">Intervals from reference pitch (800Hz):</text>
+    <text text-anchor="end" x="270" y="233">1/2,  3/4,  1,</text>
+    <text text-anchor="end" x="270" y="263">9/8,  5/4,  3/2,</text>
+    <text text-anchor="end" x="270" y="293">9/5,  2,  9/4,  3</text>
+
+    <text text-anchor="start" x="330" y="233">5/8,  3/4,  15/16,</text>
+    <text text-anchor="start" x="330" y="263">1,  5/4,  7/5,  3/2,</text>
+    <text text-anchor="start" x="330" y="293">15/8,  9/4,  14/5</text>
+    <line x1="70" x2="530" y1="203" y2="203"/>
+    <line x1="70" x2="530" y1="173" y2="173"/>
+    <g class="trigger" data-tgt="chord1_ji.mp3">
+        <rect width="160" height="30" x="110" y="323"/>
+        <text text-anchor="middle" x="190" y="343">&#x25B6;&#xFE0E; listen in JI</text>
+    </g>
+    <g class="trigger" data-tgt="chord2_ji.mp3">
+        <rect width="160" height="30" x="330" y="323"/>
+        <text text-anchor="middle" x="410" y="343">&#x25B6;&#xFE0E; listen in JI</text>
+    </g>
+    <g class="trigger" data-tgt="chord1_12tet.mp3">
+        <rect width="160" height="30" x="110" y="363"/>
+        <text text-anchor="middle" x="190" y="383">&#x25B6;&#xFE0E; listen in 12TET</text>
+    </g>
+    <g class="trigger" data-tgt="chord2_12tet.mp3">
+        <rect width="160" height="30" x="330" y="363"/>
+        <text text-anchor="middle" x="410" y="383">&#x25B6;&#xFE0E; listen in 12TET</text>
+    </g>
+</svg>

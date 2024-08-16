@@ -1,0 +1,163 @@
+<svg width="1260" height="960" viewBox="-6 -1 126 96"
+xmlns="http://www.w3.org/2000/svg"
+font-size="5" text-anchor="middle" dominant-baseline="middle"
+style="font-family: Georgia, serif;">
+	<style>
+        .fnote { fill: #eeeeee; transition: fill 2.7s cubic-bezier(.99,-0.01,.21,.99); cursor: pointer; }
+        .fnote.glowing { fill: #fbc243; transition: fill 0s; }
+        .over { pointer-events: none; }
+    </style>
+	<defs>
+		<g id="cell">
+			<rect width="9" height="9"/>
+		</g>
+        <g id="tile">
+            <rect fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2" opacity="0.8" width="39" height="29"/>
+        </g>
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" />
+        </marker>
+	</defs>
+	<rect fill="#aaaaff" x="-1" y="-1" width="121" height="91"/>
+    
+    <use href="#cell" class="fnote" data-fq="554.4" x="000" y="00"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="010" y="00"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="020" y="00"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="030" y="00"/>
+    <use href="#cell" class="fnote" data-fq="349.2" x="040" y="00"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="050" y="00"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="060" y="00"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="070" y="00"/>
+    <use href="#cell" class="fnote" data-fq="440.0" x="080" y="00"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="090" y="00"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="100" y="00"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="110" y="00"/>
+
+    <use href="#cell" class="fnote" data-fq="440.0" x="000" y="10"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="010" y="10"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="020" y="10"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="030" y="10"/>
+    <use href="#cell" class="fnote" data-fq="554.4" x="040" y="10"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="050" y="10"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="060" y="10"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="070" y="10"/>
+    <use href="#cell" class="fnote" data-fq="349.2" x="080" y="10"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="090" y="10"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="100" y="10"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="110" y="10"/>
+    
+    <use href="#cell" class="fnote" data-fq="349.2" x="000" y="20"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="010" y="20"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="020" y="20"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="030" y="20"/>
+    <use href="#cell" class="fnote" data-fq="440.0" x="040" y="20"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="050" y="20"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="060" y="20"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="070" y="20"/>
+    <use href="#cell" class="fnote" data-fq="554.4" x="080" y="20"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="090" y="20"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="100" y="20"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="110" y="20"/>
+    
+    <use href="#cell" class="fnote" data-fq="554.4" x="000" y="30"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="010" y="30"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="020" y="30"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="030" y="30"/>
+    <use href="#cell" class="fnote" data-fq="349.2" x="040" y="30"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="050" y="30"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="060" y="30"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="070" y="30"/>
+    <use href="#cell" class="fnote" data-fq="440.0" x="080" y="30"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="090" y="30"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="100" y="30"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="110" y="30"/>
+    
+    <use href="#cell" class="fnote" data-fq="440.0" x="000" y="40"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="010" y="40"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="020" y="40"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="030" y="40"/>
+    <use href="#cell" class="fnote" data-fq="554.4" x="040" y="40"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="050" y="40"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="060" y="40"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="070" y="40"/>
+    <use href="#cell" class="fnote" data-fq="349.2" x="080" y="40"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="090" y="40"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="100" y="40"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="110" y="40"/>
+    
+    <use href="#cell" class="fnote" data-fq="349.2" x="000" y="50"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="010" y="50"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="020" y="50"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="030" y="50"/>
+    <use href="#cell" class="fnote" data-fq="440.0" x="040" y="50"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="050" y="50"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="060" y="50"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="070" y="50"/>
+    <use href="#cell" class="fnote" data-fq="554.4" x="080" y="50"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="090" y="50"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="100" y="50"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="110" y="50"/>
+    
+    <use href="#cell" class="fnote" data-fq="554.4" x="000" y="60"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="010" y="60"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="020" y="60"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="030" y="60"/>
+    <use href="#cell" class="fnote" data-fq="349.2" x="040" y="60"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="050" y="60"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="060" y="60"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="070" y="60"/>
+    <use href="#cell" class="fnote" data-fq="440.0" x="080" y="60"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="090" y="60"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="100" y="60"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="110" y="60"/>
+    
+    <use href="#cell" class="fnote" data-fq="440.0" x="000" y="70"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="010" y="70"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="020" y="70"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="030" y="70"/>
+    <use href="#cell" class="fnote" data-fq="554.4" x="040" y="70"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="050" y="70"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="060" y="70"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="070" y="70"/>
+    <use href="#cell" class="fnote" data-fq="349.2" x="080" y="70"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="090" y="70"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="100" y="70"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="110" y="70"/>
+    
+    <use href="#cell" class="fnote" data-fq="349.2" x="000" y="80"/>
+    <use href="#cell" class="fnote" data-fq="523.3" x="010" y="80"/>
+    <use href="#cell" class="fnote" data-fq="392.0" x="020" y="80"/>
+    <use href="#cell" class="fnote" data-fq="587.3" x="030" y="80"/>
+    <use href="#cell" class="fnote" data-fq="440.0" x="040" y="80"/>
+    <use href="#cell" class="fnote" data-fq="329.6" x="050" y="80"/>
+    <use href="#cell" class="fnote" data-fq="493.9" x="060" y="80"/>
+    <use href="#cell" class="fnote" data-fq="370.0" x="070" y="80"/>
+    <use href="#cell" class="fnote" data-fq="554.4" x="080" y="80"/>
+    <use href="#cell" class="fnote" data-fq="415.3" x="090" y="80"/>
+    <use href="#cell" class="fnote" data-fq="622.3" x="100" y="80"/>
+    <use href="#cell" class="fnote" data-fq="466.2" x="110" y="80"/>
+
+    <use href="#tile" x="00" y="-10"/>
+    <use href="#tile" x="00" y="20"/>
+    <use href="#tile" x="00" y="50"/>
+    <use href="#tile" x="00" y="80"/>
+
+    <use href="#tile" x="40" y="00"/>
+    <use href="#tile" x="40" y="30"/>
+    <use href="#tile" x="40" y="60"/>
+
+    <use href="#tile" x="80" y="-20"/>
+    <use href="#tile" x="80" y="10"/>
+    <use href="#tile" x="80" y="40"/>
+    <use href="#tile" x="80" y="70"/>
+    
+    <rect x="-10" y="90" width="130" height="20" stroke="none" fill="white"/>
+    <line marker-end="url(#arrow)" x1="-0.5" y1="89.5" x2="-0.5" y2="75" stroke="#555" stroke-width="0.6"/>
+    <line marker-end="url(#arrow)" x1="-0.5" y1="89.5" x2="15" y2="89.5" stroke="#555" stroke-width="0.6"/>
+    <!-- tspans to fix https://bugs.webkit.org/show_bug.cgi?id=139258 -->
+    <g fill="#444" stroke="none" font-size="4">
+        <text x="-4" y="83"><tspan dominant-baseline="middle">×5</tspan></text>
+        <text x="5" y="92"><tspan dominant-baseline="middle">×3</tspan></text>
+    </g>
+</svg>
+

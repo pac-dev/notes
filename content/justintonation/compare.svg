@@ -1,0 +1,57 @@
+<svg width="636" height="270" viewBox="-20 -18 636 270"
+xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+font-size="21" text-anchor="middle" dominant-baseline="middle"
+style="font-family: Georgia, serif;">
+	<style>
+        .fnote { fill: white; transition: fill 8s; cursor: pointer; font-size: 17px; }
+        .fnote.glowing { fill: #fbc243; transition: fill 0s; }
+        .fnote text { fill: black; }
+    </style>
+	<defs>
+		<g id="arrow">
+			<path transform="translate(-64 -48)" fill="none" stroke="#000" stroke-width="2" d="M42 70A40 40 0 0 1 86 70"/>
+			<path transform="translate(15 26) rotate(-53)" fill="#000" d="M0 0 14 0 7 8"/>
+		</g>
+		<g id="freq">
+			<ellipse stroke="#000" stroke-width="2" rx="27" ry="19"/>
+		</g>
+	</defs>
+
+    <text font-size="16" x="303" y="6"><tspan dominant-baseline="middle">Just Intonation</tspan></text>
+    <text font-size="16" x="303" y="145"><tspan dominant-baseline="middle">12-tone Equal Temperament</tspan></text>
+    <line stroke="#eeeeee" stroke-width="4" x1="-10" y1="121" x2="606" y2="121"/>
+
+	<g transform="translate(32 81)"  class="fnote seq1" data-fq="220.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">220</tspan></text></g>
+	<g transform="translate(108 81)" class="fnote seq1" data-fq="275.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">275</tspan></text></g>
+	<g transform="translate(184 81)" class="fnote seq1" data-fq="366.7"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~367</tspan></text></g>
+	<g transform="translate(260 81)" class="fnote seq1" data-fq="440.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">440</tspan></text></g>
+	<g transform="translate(336 81)" class="fnote seq1" data-fq="366.7"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~367</tspan></text></g>
+	<g transform="translate(412 81)" class="fnote seq1" data-fq="293.3"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~293</tspan></text></g>
+	<g transform="translate(488 81)" class="fnote seq1" data-fq="220.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">220</tspan></text></g>
+	<g transform="translate(564 81)" class="fnote seq1" data-fq="330.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">330</tspan></text></g>
+    
+	<g transform="translate(62 35)" ><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×4/3</tspan></text></g>
+	<g transform="translate(138 35)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×4/3</tspan></text></g>
+	<g transform="translate(214 35)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×4/3</tspan></text></g>
+	<g transform="translate(290 35)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×4/3</tspan></text></g>
+	<g transform="translate(366 35)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×3/4</tspan></text></g>
+	<g transform="translate(442 35)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×3/4</tspan></text></g>
+	<g transform="translate(518 35)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×3/4</tspan></text></g>
+	
+	<g transform="translate(32 220)"  class="fnote seq2" data-fq="220.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">220</tspan></text></g>
+	<g transform="translate(108 220)" class="fnote seq2" data-fq="277.2"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~277</tspan></text></g>
+	<g transform="translate(184 220)" class="fnote seq2" data-fq="370.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~370</tspan></text></g>
+	<g transform="translate(260 220)" class="fnote seq2" data-fq="440.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">440</tspan></text></g>
+	<g transform="translate(336 220)" class="fnote seq2" data-fq="370.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~370</tspan></text></g>
+	<g transform="translate(412 220)" class="fnote seq2" data-fq="293.7"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~294</tspan></text></g>
+	<g transform="translate(488 220)" class="fnote seq2" data-fq="220.0"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">220</tspan></text></g>
+	<g transform="translate(564 220)" class="fnote seq2" data-fq="329.6"><use xlink:href="#freq" /><text><tspan dominant-baseline="middle">~330</tspan></text></g>
+    
+	<g transform="translate(62 174)" ><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔⁴</tspan></text></g>
+	<g transform="translate(138 174)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔⁵</tspan></text></g>
+	<g transform="translate(214 174)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔³</tspan></text></g>
+	<g transform="translate(290 174)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔⁻³</tspan></text></g>
+	<g transform="translate(366 174)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔⁻⁴</tspan></text></g>
+	<g transform="translate(442 174)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔⁻⁵</tspan></text></g>
+	<g transform="translate(518 174)"><use xlink:href="#arrow" /><text><tspan dominant-baseline="middle">×𝒔⁷</tspan></text></g>
+</svg>

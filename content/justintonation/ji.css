@@ -1,0 +1,135 @@
+h1 {
+    font-size: 28px;
+}
+.figRun::before { content: "\25B6\FE0E play"; }
+span.spell {
+    text-decoration: underline wavy #f88;
+}
+.figDiagram object, .figDiagram svg {
+    max-width: 100%;
+}
+.lattice object, .lattice svg {
+    width: 100%;
+    max-width: 500px;
+}
+.figCaption i {
+    font-style: normal;
+}
+.bc_chords {
+    position: relative;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.bc_chords iframe {
+    position: relative;
+}
+.bc_chords > object {
+    position: relative;
+    max-width: 500px;
+    top: -46px;
+    margin: 0 -60px -40px;
+    mix-blend-mode: multiply;
+}
+.minitrack {
+    display: inline-block;
+    position: relative;
+    width: 400px;
+    height: 120px;
+    border: 1px solid #aaa;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    background: #fff8;
+    z-index: 2;
+}
+.minitrack .mt_album {
+    position: absolute;
+    top: 11px;
+    left: 9px;
+    color: #0687f5;
+    text-decoration: none;
+    font-weight: bold;
+}
+mt-artist {
+    position: absolute;
+    top: 31px;
+    left: 9px;
+}
+mt-track {
+    position: absolute;
+    bottom: 41px;
+    left: 66px;
+    font-size: 11px;
+}
+.minitrack .mt_play {
+    position: absolute;
+    left: 9px;
+    bottom: 12px;
+    width: 46px;
+    height: 46px;
+    background: #fff;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+.minitrack .mt_play::before {
+    content: '';
+    position: absolute;
+    right: 12px;
+    border-bottom: inset 10px transparent;
+    border-left: 18px solid #333;
+    border-top: inset 10px transparent;
+    margin: 12px auto;
+}
+.minitrack.playing .mt_play::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 13px;
+    bottom: 13px;
+    border-style: solid;
+    border-width: 0px 6px 0px 6px;
+    border-color: #333;
+    margin: 0;
+}
+.minitrack .mt_seekbar {
+    position: absolute;
+    bottom: 18px;
+    left: 66px;
+    right: 15px;
+    height: 12px;
+    border: 1px solid #aaa;
+}
+.minitrack .mt_seekrange {
+    position: absolute;
+    left: 0;
+    right: 24px;
+    top: 0;
+    bottom: 0;
+}
+.minitrack .mt_seekhand {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 24px;
+    background: #eee;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+.minitrack .mt_time {
+    position: absolute;
+    bottom: 40px;
+    right: 15px;
+    font-size: 11px;
+    color: #888;
+}
+.minitrack .mt_icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 10px;
+    opacity: 0.5;
+    background: url('minibc.svg?version=VER') no-repeat 1px 0px;
+}
